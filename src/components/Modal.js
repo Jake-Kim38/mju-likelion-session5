@@ -1,9 +1,9 @@
 import styled from "styled-components";
-import watcha from "../assets/image/icon_logo.png";
-import kakao from "../assets/image/icon_kakao.png";
-import google from "../assets/image/icon_google.png";
-import twitter from "../assets/image/icon_twitter.png";
-import line from "../assets/image/icon_line.png";
+import watcha_img from "../assets/image/icon_logo.png";
+import kakao_img from "../assets/image/icon_kakao.png";
+import google_img from "../assets/image/icon_google.png";
+import twitter_img from "../assets/image/icon_twitter.png";
+import line_img from "../assets/image/icon_line.png";
 
 const Modal = (props) => {
   const isShow = props.data;
@@ -14,33 +14,33 @@ const Modal = (props) => {
         <WideBlock color="gray">
           <LoginBlock color="white">
             <CloseButton onClick={() => setShow(false)}>&times;</CloseButton>
-            <TitleImage src={watcha} />
+            <TitleImage src={watcha_img} />
             <LoginTitle>로그인</LoginTitle>
-            <LoginInput placeholder="이메일" color="#C9C9CF"></LoginInput>
-            <LoginInput placeholder="비밀번호" color="#C9C9CF"></LoginInput>
+            <LoginInput placeholder="이메일" color="#C9C9CF" />
+            <LoginInput placeholder="비밀번호" color="#C9C9CF" />
             <LoginButton color="#FF0558">로그인</LoginButton>
             <ForgetPassword color="#FF0558">
               비밀번호를 잊어버리셨나요?
             </ForgetPassword>
-            <CheckDiv>
+            <CheckArea>
               <NoId>계정이 없으신가요?</NoId>
               <JoinIn>회원가입</JoinIn>
-            </CheckDiv>
+            </CheckArea>
             <OrDiv>
               <OrLine color="gray" />
               &nbsp;OR&nbsp;
               <OrLine color="gray" />
             </OrDiv>
-            <ImageDiv>
-              <SelectImage src={kakao} />
-              <SelectImage src={google} />
-              <SelectImage src={twitter} />
-              <SelectImage src={line} />
-            </ImageDiv>
-            <ExplainDiv color="#C9C9CF">
+            <ImageArea>
+              <SelectImage src={kakao_img} />
+              <SelectImage src={google_img} />
+              <SelectImage src={twitter_img} />
+              <SelectImage src={line_img} />
+            </ImageArea>
+            <ExplainArea color="#C9C9CF">
               TIP: 왓챠 계정이 있으신가요? 왓챠와 왓챠피디아는 같은 계정을
               사용해요
-            </ExplainDiv>
+            </ExplainArea>
           </LoginBlock>
         </WideBlock>
       </>
@@ -123,7 +123,7 @@ const ForgetPassword = styled.h3`
   color: ${(props) => props.color || "#FF0558"};
 `;
 
-const CheckDiv = styled.div`
+const CheckArea = styled.div`
   width: 50vh;
   height: 7vh;
   display: flex;
@@ -154,7 +154,7 @@ const OrLine = styled.div`
   background: ${(props) => props.color || "gray"};
 `;
 
-const ImageDiv = styled.div`
+const ImageArea = styled.div`
   width: 50vh;
   height: 7vh;
   display: flex;
@@ -168,7 +168,7 @@ const SelectImage = styled.img`
   cursor: pointer;
 `;
 
-const ExplainDiv = styled.div`
+const ExplainArea = styled.div`
   width: 55vh;
   height: 10vh;
   background: ${(props) => props.color || "#C9C9CF"};
