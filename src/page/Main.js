@@ -1,14 +1,28 @@
 import styled from "styled-components";
-import { DATA } from "../assets/Data";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
-const Main = (props) => {
-  const setShow = props.onShow;
+const Main = ({ onShow }) => {
+  const setShow = onShow.setShow;
   const navigate = useNavigate();
+  const [movies, setMovies] = useState([]);
 
+  useEffect(() => {
+    axios
+      .get("https://api.themoviedb.org/3/movie/popular?language=ko-KR&page=1", {
+        headers: {
+          Authorization: "Bearer " + process.env.REACT_APP_API_KEY,
+        },
+      })
+      .then(function (response) {
+        setMovies(response.data.results);
+      });
+  }, []);
+  console.log(movies);
   const handleNavigate = (idx) => {
-    navigate(`/boards/${DATA[idx].rank}`);
+    navigate(`/boards/${movies[idx].id}`);
   };
   return (
     <>
@@ -18,21 +32,19 @@ const Main = (props) => {
       </OrDiv>
       <RankTitle>박스오피스 순위</RankTitle>
       <ScrollArea>
-        {DATA.map((item, index) => (
-          <ContentArea key={item.rank} onClick={() => handleNavigate(index)}>
+        {movies.map((item, index) => (
+          <ContentArea key={item.id} onClick={() => handleNavigate(index)}>
             <TopContent>
-              <MovieRank color="black">{item.rank}</MovieRank>
-              <ImgDiv src={item.img} />
+              <MovieRank color="black">{index + 1}</MovieRank>
+              <ImgDiv
+                src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+              />
             </TopContent>
             <BottomContent>
               <MovieTitle>{item.title}</MovieTitle>
-              <MovieInfo>
-                {item.year} • {item.country}
-              </MovieInfo>
-              <MovieInfo>평균⭐{item.average}</MovieInfo>
-              <MovieInfo>
-                예매율 {item.percent} • 누적 관객 {item.audience / 10000} 만명
-              </MovieInfo>
+              <MovieInfo>{item.release_date}</MovieInfo>
+              <MovieInfo>평균⭐{item.vote_average}</MovieInfo>
+              <MovieInfo>누적 관객 {Math.ceil(item.popularity)} 만명</MovieInfo>
             </BottomContent>
           </ContentArea>
         ))}

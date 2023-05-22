@@ -1,33 +1,46 @@
 import { useParams } from "react-router-dom";
-import { DATA } from "../assets/Data";
 import Header from "../components/Header";
 import styled from "styled-components";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-const Board = (props) => {
+const Board = ({ onShow }) => {
   const params = useParams();
-  const id = parseInt(params.rank) - 1;
-  const setShow = props.onShow;
-  const movie = DATA[id];
+  const setShow = onShow.setShow;
+  const [movie, setMovie] = useState({});
+
+  useEffect(() => {
+    axios
+      .get(`https://api.themoviedb.org/3/movie/${params.rank}?language=ko-KR`, {
+        headers: {
+          Authorization: "Bearer " + process.env.REACT_APP_API_KEY,
+        },
+      })
+      .then(function (response) {
+        setMovie(response.data);
+      });
+  }, [params.rank]);
 
   return (
     <>
       <Header onShow={setShow} />
       <MainArea>
         <BgColor color="#F1E47B" />
-        <ImgDiv src={movie.img} />
+        <ImgDiv src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} />
         <ContentArea>
           <TopContent>
-            예매순위: {movie.rank}위({movie.percent}) • 누적관객
-            {movie.audience / 10000}만명
+            누적관객 &nbsp;{Math.ceil(movie.popularity)}만명
           </TopContent>
           <BottomContent>
             <TitleArea>{movie.title}</TitleArea>
             <SubTitleArea>
-              {movie.year} • {movie.genre} • {movie.country}
+              {movie.release_date} •{" "}
+              {movie.original_language && movie.original_language.toUpperCase()}{" "}
+              • {movie.genres && movie.genres.map((item) => `${item.name} `)}
             </SubTitleArea>
             <OrLine color="#7f7f7f" />
             <ScoreArea>
-              평균 ⭐{movie.average} ({movie.audience / 10000}만명)
+              평균 ⭐{movie.vote_average} ({Math.ceil(movie.popularity)}만명)
             </ScoreArea>
             <OrLine color="#7f7f7f" />
             <BottomLine>
@@ -52,10 +65,10 @@ const Board = (props) => {
           <More color="#FF2F6E">더보기</More>
         </AboutTitle>
         <AboutMovie color="#7f7f7f">
-          {movie.originalTitle} <br /> {movie.year} • {movie.country} •{" "}
-          {movie.genre} <br /> {movie.runningTime} • {movie.age}
+          {movie.original_title} <br /> {movie.release_date} <br />{" "}
+          {movie.genres && movie.genres.map((item) => `${item.name} `)}
         </AboutMovie>
-        <Description>{movie.description}</Description>
+        <Description>{movie.overview}</Description>
       </AboutBlock>
     </>
   );
