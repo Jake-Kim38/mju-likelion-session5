@@ -1,13 +1,14 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/Header";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { movieAtom } from "../atoms/movieAtom";
+import { useRecoilState } from "recoil";
 
-const Main = ({ onShow }) => {
-  const setShow = onShow.setShow;
+const Main = () => {
   const navigate = useNavigate();
   const [movies, setMovies] = useState([]);
+  const [recommends, setRecommends] = useRecoilState(movieAtom);
 
   useEffect(() => {
     axios
@@ -20,20 +21,35 @@ const Main = ({ onShow }) => {
         setMovies(response.data.results);
       });
   }, []);
-  console.log(movies);
-  const handleNavigate = (idx) => {
-    navigate(`/boards/${movies[idx].id}`);
+
+  useEffect(() => {
+    axios
+      .get(
+        "https://api.themoviedb.org/3/movie/top_rated?language=ko-KR&page=1",
+        {
+          headers: {
+            Authorization: "Bearer " + process.env.REACT_APP_API_KEY,
+          },
+        }
+      )
+      .then(function (response) {
+        setRecommends(response.data.results);
+      });
+  }, []);
+
+  const handleNavigate = (id) => {
+    navigate(`/boards/${id}`);
   };
+
   return (
     <>
-      <Header onShow={setShow} />
       <OrDiv>
         <OrLine color="gray" />
       </OrDiv>
       <RankTitle>박스오피스 순위</RankTitle>
       <ScrollArea>
         {movies.map((item, index) => (
-          <ContentArea key={item.id} onClick={() => handleNavigate(index)}>
+          <ContentArea key={item.id} onClick={() => handleNavigate(item.id)}>
             <TopContent>
               <MovieRank color="black">{index + 1}</MovieRank>
               <ImgDiv

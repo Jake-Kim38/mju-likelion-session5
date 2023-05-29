@@ -1,13 +1,13 @@
 import { useParams } from "react-router-dom";
-import Header from "../components/Header";
+import Recommend from "./Recommend";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const Board = ({ onShow }) => {
+const Board = () => {
   const params = useParams();
-  const setShow = onShow.setShow;
   const [movie, setMovie] = useState({});
+  const selections = ["➕보고싶어요", "✏️코멘트", "👁️‍🗨️보는중", "🎥더보기"];
 
   useEffect(() => {
     axios
@@ -21,14 +21,15 @@ const Board = ({ onShow }) => {
       });
   }, [params.rank]);
 
+  console.log(movie);
+
   return (
     <>
-      <Header onShow={setShow} />
       <MainArea>
-        <BgColor color="#F1E47B" />
+        <BgImg src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`} />
         <ImgDiv src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} />
         <ContentArea>
-          <TopContent>
+          <TopContent color="white">
             누적관객 &nbsp;{Math.ceil(movie.popularity)}만명
           </TopContent>
           <BottomContent>
@@ -36,7 +37,7 @@ const Board = ({ onShow }) => {
             <SubTitleArea>
               {movie.release_date} •{" "}
               {movie.original_language && movie.original_language.toUpperCase()}{" "}
-              • {movie.genres && movie.genres.map((item) => `${item.name} `)}
+              • {movie.genres && movie.genres.map((movie) => `${movie.name} `)}
             </SubTitleArea>
             <OrLine color="#7f7f7f" />
             <ScoreArea>
@@ -50,10 +51,11 @@ const Board = ({ onShow }) => {
                 ⭐⭐⭐⭐⭐
               </Stars>
               <UpLine color="#7f7f7f" />
-              <Selections>
-                ➕보고싶어요 &nbsp;&nbsp;&nbsp; ✏️코멘트 &nbsp;&nbsp;&nbsp;
-                👁️‍🗨️보는중 &nbsp;&nbsp;&nbsp; 🎥더보기
-              </Selections>
+              <SelectArea>
+                {selections.map((select) => (
+                  <div key={select}>{select}</div>
+                ))}
+              </SelectArea>
             </BottomLine>
           </BottomContent>
         </ContentArea>
@@ -70,15 +72,14 @@ const Board = ({ onShow }) => {
         </AboutMovie>
         <Description>{movie.overview}</Description>
       </AboutBlock>
+      <Recommend />
     </>
   );
 };
 
-const BgColor = styled.div`
+const BgImg = styled.img`
   width: 100%;
   height: 28vh;
-  background: ${(props) => props.color || "#F1E47B"};
-  opacity: 0.6;
   order: 2;
 `;
 
@@ -111,7 +112,7 @@ const TopContent = styled.div`
   height: 5vh;
   font-size: 15px;
   font-weight: 600;
-  color: ${(props) => props.color || "#7f7f7f"};
+  color: ${(props) => props.color || "white"};
 `;
 
 const BottomContent = styled.div`
@@ -156,11 +157,11 @@ const Stars = styled.div`
   color: ${(props) => props.color || "#7f7f7f"};
 `;
 
-const Selections = styled.div`
-  width: 100vh;
-  height: 5vh;
+const SelectArea = styled.div`
+  width: 80%;
+  height: 40%;
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
 `;
 
